@@ -17,13 +17,14 @@ const accounts = {
 };
 
 const config: HardhatUserConfig = {
-    defaultNetwork: "hardhat",
+    defaultNetwork: "basesepolia",
     namedAccounts: {
         deployer: 0, // Do not use this account for testing
         admin: 1,
         trader: 2,
     },
     networks: {
+        basesepolia: { accounts, ...getRemoteNetworkConfig("base-sepolia") },
         goerli: { accounts, ...getRemoteNetworkConfig("goerli") },
         kovan: { accounts, ...getRemoteNetworkConfig("kovan") },
         rinkeby: { accounts, ...getRemoteNetworkConfig("rinkeby") },

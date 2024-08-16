@@ -1,4 +1,4 @@
-import { infuraApiKey, maticVigilApiKey } from "./env";
+import { infuraApiKey, maticVigilApiKey, alchemyApiKey } from "./env";
 
 export enum ChainId {
     ganache = 1337,
@@ -11,6 +11,8 @@ export enum ChainId {
     rinkeby = 4,
     ropsten = 3,
     xdai = 100,
+    base = 8453,
+    "base-sepolia" = 84532,
 }
 
 // Delegate requests for a network config to a provider specific function based on which networks they serve
@@ -28,13 +30,26 @@ const getInfuraConfig = (network: InfuraChain): { url: string; chainId: number }
     };
 };
 
+// Base
+const alchemyChains = ["base", "base-sepolia"] as const;
+type AlchemyChain = typeof alchemyChains[number];
+const getAlchemyConfig = (network: AlchemyChain): { url: string; chainId: number } => {
+    if (!process.env.ALCHEMY_API_KEY) {
+        throw new Error("Please set your ALCHEMY_API_KEY in a .env file");
+    }
+    return {
+        url: `https://${network}.g.alchemy.com/v2/${alchemyApiKey}`,
+        chainId: ChainId[network],
+    };
+};
+
 // Matic
 const maticVigilChains = ["matic", "mumbai"] as const;
 type MaticVigilChain = typeof maticVigilChains[number];
 const getMaticVigilConfig = (network: MaticVigilChain): { url: string; chainId: number } => {
-    if (!maticVigilApiKey) {
-        throw new Error("Please set your MATICVIGIL_API_KEY in a .env file");
-    }
+    // if (!maticVigilApiKey) {
+    //     throw new Error("Please set your MATICVIGIL_API_KEY in a .env file");
+    // }
 
     const networkString = network === "matic" ? "mainnet" : "mumbai";
     return {
@@ -53,10 +68,11 @@ const getXDaiConfig = (network: XDaiChain): { url: string; chainId: number } => 
     };
 };
 
-export type RemoteChain = InfuraChain | MaticVigilChain | XDaiChain;
+export type RemoteChain = InfuraChain | MaticVigilChain | XDaiChain | AlchemyChain;
 export const getRemoteNetworkConfig = (network: RemoteChain): { url: string; chainId: number } => {
     if (infuraChains.includes(network as InfuraChain)) return getInfuraConfig(network as InfuraChain);
     if (maticVigilChains.includes(network as MaticVigilChain)) return getMaticVigilConfig(network as MaticVigilChain);
     if (xDaiChains.includes(network as XDaiChain)) return getXDaiConfig(network as XDaiChain);
+    if (alchemyChains.includes(network as AlchemyChain)) return getAlchemyConfig(network as AlchemyChain);
     throw Error("Unknown network");
 };
