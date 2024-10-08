@@ -17,7 +17,7 @@ const accounts = {
 };
 
 const config: HardhatUserConfig = {
-    defaultNetwork: "base",
+    defaultNetwork: "basesepolia",
     namedAccounts: {
         deployer: 0, // Do not use this account for testing
         admin: 1,
