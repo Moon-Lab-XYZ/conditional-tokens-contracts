@@ -11,7 +11,7 @@ export enum ChainId {
     rinkeby = 4,
     ropsten = 3,
     xdai = 100,
-    base = 8453,
+    "base-mainnet" = 8453,
     "base-sepolia" = 84532,
 }
 
@@ -31,7 +31,7 @@ const getInfuraConfig = (network: InfuraChain): { url: string; chainId: number }
 };
 
 // Base
-const alchemyChains = ["base", "base-sepolia"] as const;
+const alchemyChains = ["base-mainnet", "base-sepolia"] as const;
 type AlchemyChain = typeof alchemyChains[number];
 const getAlchemyConfig = (network: AlchemyChain): { url: string; chainId: number } => {
     if (!process.env.ALCHEMY_API_KEY) {
